@@ -5,8 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +29,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.utp.ui.theme.UTPTheme
@@ -49,8 +55,8 @@ import modul.Makanan
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            UTPTheme {
-                Surface(modifier = Modifier.fillMaxSize().safeDrawingPadding(), color = androidx.compose.material3.MaterialTheme.colorScheme.background) {
+            UTPTheme() {
+                Surface(modifier = Modifier.fillMaxSize().safeDrawingPadding().background(MaterialTheme.colorScheme.background)) {
                     val navCon = rememberNavController()
                     AppNavigation(navCon)
                 }
@@ -88,40 +94,75 @@ fun TambahScreen(navCon: NavHostController) {
     var harga by remember { mutableStateOf("") }
     var rating by remember { mutableStateOf("") }
 
-    Column() {
-        Text(text = "Tambah Makanan")
-        Column() {
-            TextField(value = nama, onValueChange = { nama = it }, placeholder = { Text("Nama Burger") })
-            TextField(value = des, onValueChange = { des = it }, placeholder = { Text("Deskripsi") })
-            TextField(value = harga, onValueChange = { harga = it }, placeholder = { Text("Harga") })
-            TextField(value = rating, onValueChange = { rating = it }, placeholder = { Text("Rating") })
-            Button(onClick = {navCon.popBackStack()}) { Text("Simpan") }
-            Button(onClick = {navCon.popBackStack()}) { Text("Kembali") }
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+        Text(text = "Tambah Makanan", fontSize = 30.sp)
+        Spacer(Modifier.height(25.dp))
+
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(10.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                TextField(
+                    value = nama,
+                    onValueChange = { nama = it },
+                    placeholder = { Text("Nama Burger") }
+                )
+                TextField(
+                    value = des,
+                    onValueChange = { des = it },
+                    placeholder = { Text("Deskripsi") })
+                TextField(
+                    value = harga,
+                    onValueChange = { harga = it },
+                    placeholder = { Text("Harga") })
+                TextField(
+                    value = rating,
+                    onValueChange = { rating = it },
+                    placeholder = { Text("Rating") })
+                Spacer(Modifier.height(10.dp))
+                Button(onClick = { navCon.popBackStack() }) { Text("Simpan") }
+                Button(onClick = { navCon.popBackStack() }) { Text("Kembali") }
+            }
         }
     }
 }
 
 @Composable
 fun Detail(makanan: Makanan, navCon: NavHostController) {
+//    Column (modifier = Modifier.fillMaxSize(),
+//        horizontalAlignment = Alignment.CenterHorizontally,
+//        verticalArrangement = Arrangement.Center
+//    ) {
+//        Card(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            Column(
+                modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+//                verticalArrangement = Arrangement.SpaceBetween,
 
-    Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 150.dp, bottom = 150.dp ).fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceBetween) {
-        Image(modifier = Modifier.height(150.dp).width(150.dp), painter = painterResource(id = makanan.gambar), contentDescription = makanan.nama)
-        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = makanan.nama, fontSize = 20.sp)
-            Text(text = makanan.deskripsi, fontSize = 20.sp)
-            Text(text = makanan.harga.toString(), fontSize = 20.sp)
-            Text(text = makanan.rating.toString(), fontSize = 20.sp)
-        }
-        Button(onClick = {navCon.popBackStack()}) { Text("Pesan Sekarang") }
-        Button(onClick = {navCon.popBackStack()}) { Text("Kembali") }
-    }
+                ) {
+                Image(
+                    modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                    painter = painterResource(id = makanan.gambar),
+                    contentDescription = makanan.nama
+                )
+                Card (
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(modifier = Modifier.padding(5.dp), text = makanan.nama, fontSize = 25.sp, fontWeight = FontWeight.ExtraBold)
+                    Text(modifier = Modifier.padding(5.dp), text = makanan.rating.toString(), fontSize = 15.sp)
+                    Text(modifier = Modifier.padding(5.dp), text = makanan.harga.toString(), fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                    Text(modifier = Modifier.padding(5.dp), text = makanan.deskripsi, fontSize = 15.sp)
+                }
+                Button(onClick = { navCon.popBackStack() }) { Text("Pesan Sekarang") }
+                Button(onClick = { navCon.popBackStack() }) { Text("Kembali") }
+            }
+//        }
+//    }
 }
 
 @Composable
 fun HomeScreen(navCon: NavHostController) {
     var searchText by remember { mutableStateOf("") }
 
-    Column(Modifier.padding(20.dp)) {
+    Column(Modifier.padding(20.dp).background(MaterialTheme.colorScheme.background)) {
         Text(text = "Aldi's Burger", fontSize = 20.sp, modifier = Modifier.padding(10.dp))
         TextField(modifier = Modifier.padding(10.dp), value = searchText, onValueChange = { searchText = it }, placeholder = { Text("Search for a burger...") })
         Button(modifier = Modifier.padding(10.dp),onClick = {navCon.navigate("tambah")}) { Text("Tambah Burger") }
